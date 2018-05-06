@@ -76,6 +76,8 @@ class XVIEWDetection(Dataset):
         self.images = np.load(images_filename, encoding='bytes')
         self.boxes = np.load(boxes_filename, encoding='bytes')
         self.classes = np.load(classes_filename, encoding='bytes')
+        self.classes = [xview_idToIndex[ci] for ci in self.classes]
+        self.label_names = xview_class_names
 
     def __getitem__(self, index):
         img = self.images[index]
@@ -95,7 +97,13 @@ class XVIEWDetection(Dataset):
             # target = np.hstack((boxes, np.expand_dims(labels, axis=1)))
         difficult = False
         # CONVERT LABELS/BOXES TO TORCH?
-        return np.transpose(img, (2, 0, 1)), boxes, np.expand_dims(classes, axis=1), False
+        # np.expand_dims(, axis=1)
+        img = np.transpose(img, (2, 0, 1))
+        # print('img ', img)
+        # print('img shape', img.shape)
+        # print('boxes: ', boxes)
+        # print('classes: ', classes)
+        return img, boxes, classes, False
 
     def __len__(self):
         return self.images.shape[0]
@@ -141,15 +149,15 @@ class XVIEWDetection(Dataset):
         '''
         return torch.Tensor(self.images[index].unsqueeze_(0))
 
-xview_id = [0, 1, 11, 12, 13, 15, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42,
+xview_id = [0, 11, 12, 13, 15, 17, 18, 19, 20, 21, 23, 24, 25, 26, 27, 28, 29, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42,
             44, 45, 47, 49, 50, 51, 52, 53, 54, 55, 56, 57, 59, 60, 61, 62, 63, 64, 65, 66, 71, 72, 73, 74, 76, 77,
             79, 83, 84, 86, 89, 91, 93, 94]
 
 xview_class_indices = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29,
          30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56,
-         57, 58, 59, 60, 61]
+         57, 58, 59, 60]
 
-xview_class_names = ('__background__', '__noclass__', 'fixed_wing_aircraft', 'small_aircraft', 'passenger_OR_cargo_plane', 'helicopter',
+xview_class_names = ('__noclass__', 'fixed_wing_aircraft', 'small_aircraft', 'passenger_OR_cargo_plane', 'helicopter',
                'passenger_vehicle', 'small_car', 'bus', 'pickup_truck', 'utility_truck', 'truck', 'cargo_truck',
                'truck_tractor_with_box_trailer', 'truck_tractor', 'trailer', 'truck_tractor_with_flatbed_trailer',
                'truck_tractor_with_liquid_tank', 'crane_truck', 'railway_vehicle', 'passenger_car',

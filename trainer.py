@@ -128,6 +128,7 @@ class FasterRCNNTrainer(nn.Module):
             img_size)
         gt_rpn_label = at.tovariable(gt_rpn_label).long()
         gt_rpn_loc = at.tovariable(gt_rpn_loc)
+
         rpn_loc_loss = _fast_rcnn_loc_loss(
             rpn_loc,
             gt_rpn_loc,
@@ -245,7 +246,8 @@ def _smooth_l1_loss(x, t, in_weight, sigma):
 
 
 def _fast_rcnn_loc_loss(pred_loc, gt_loc, gt_label, sigma):
-    in_weight = t.cuda.FloatTensor(gt_loc.shape).fill_(0)
+    in_weight = t.zeros(gt_loc.shape).cuda()
+    # in_weight = t.cuda.FloatTensor(gt_loc.shape).zero_()
     # Localization loss is calculated only for positive rois.
     # NOTE:  unlike origin implementation, 
     # we don't need inside_weight and outside_weight, they can calculate by gt_label

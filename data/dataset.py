@@ -9,9 +9,9 @@ import os.path as osp
 
 from .config import HOME
 
-IMAGES_FILENAME = osp.join(HOME, "data/images_600_num_10.npy")
-BOXES_FILENAME = osp.join(HOME, "data/boxes_600_num_10.npy")
-CLASSES_FILENAME = osp.join(HOME, "data/classes_600_num_10.npy")
+IMAGES_FILENAME = osp.join(HOME, "data/images_600_num_5.npy")
+BOXES_FILENAME = osp.join(HOME, "data/boxes_600_num_5.npy")
+CLASSES_FILENAME = osp.join(HOME, "data/classes_600_num_5.npy")
 
 def inverse_normalize(img):
     if opt.caffe_pretrain:
@@ -67,7 +67,7 @@ def preprocess(img, min_size=600, max_size=1000):
     scale1 = min_size / min(H, W)
     scale2 = max_size / max(H, W)
     scale = min(scale1, scale2)
-    img = img / 255
+    img = img / 255.0
     img = sktsf.resize(img, (C, H * scale, W * scale), mode='reflect')
     # both the longer and shorter should be less than
     # max_size and min_size
