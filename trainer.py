@@ -146,7 +146,9 @@ class FasterRCNNTrainer(nn.Module):
         roi_loc = roi_cls_loc[t.arange(0, n_sample).long().cuda(), \
                               at.totensor(gt_roi_label).long()]
         gt_roi_label = at.tovariable(gt_roi_label).long()
+        # print('gt_roi_loc was ', type(gt_roi_loc))
         gt_roi_loc = at.tovariable(gt_roi_loc)
+        # print('gt_roi_loc is ', type(gt_roi_loc))
 
         roi_loc_loss = _fast_rcnn_loc_loss(
             roi_loc.contiguous(),
@@ -243,7 +245,7 @@ def _smooth_l1_loss(x, t, in_weight, sigma):
 
 
 def _fast_rcnn_loc_loss(pred_loc, gt_loc, gt_label, sigma):
-    in_weight = t.zeros(gt_loc.shape).cuda()
+    in_weight = t.cuda.FloatTensor(gt_loc.shape).fill_(0)
     # Localization loss is calculated only for positive rois.
     # NOTE:  unlike origin implementation, 
     # we don't need inside_weight and outside_weight, they can calculate by gt_label

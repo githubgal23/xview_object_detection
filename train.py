@@ -100,7 +100,7 @@ def train(**kwargs):
                     ipdb.set_trace()
 
                 # plot loss
-                # trainer.vis.plot_many(trainer.get_meter_data())
+                # trainer.`.plot_many(trainer.get_meter_data())
 
                 # plot groud truth bboxes
                 ori_img_ = inverse_normalize(at.tonumpy(img[0]))
